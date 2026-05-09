@@ -1,0 +1,70 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+*.bak
+*.backup
+
+# Python / notebooks
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+env/
+venv/
+
+# Vivado / Vitis logs and journals
+*.log
+*.jou
+*.str
+*.pb
+vivado*.log
+vivado*.jou
+vitis*.log
+vitis*.jou
+webtalk*.log
+webtalk*.jou
+hs_err_pid*.log
+
+# Vivado generated project files
+.Xil/
+*.cache/
+*.hw/
+*.sim/
+*.runs/
+*.gen/
+*.ip_user_files/
+ip_user_files/
+xsim.dir/
+
+# Simulation / waveform outputs
+*.wdb
+*.vcd
+*.fst
+*.saif
+
+# Vitis / SDK generated folders
+.metadata/
+Debug/
+Release/
+_system/
+workspace/
+
+# HLS generated outputs
+.autopilot/
+csim/
+syn/
+sim/
+impl/
+solution*/.autopilot/
+solution*/csim/
+solution*/syn/
+solution*/sim/
+solution*/impl/
+
+# Large archives / generated packages
+*.zip
+*.tar
+*.tar.gz
+*.rar

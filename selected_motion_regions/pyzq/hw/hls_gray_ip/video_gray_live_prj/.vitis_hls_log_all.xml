@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vivadoHLSLog:LogRoot xmlns:vivadoHLSLog="www.xilinx.com/vivadoHLSLog">
+  <errorLogs>
+    <logs>
+      <synLog/>
+      <simLog/>
+      <mgLog/>
+      <packageLog/>
+      <csimLog/>
+    </logs>
+  </errorLogs>
+  <warningLogs>
+    <logs>
+      <synLog>
+        <logs message="WARNING: [RTGEN 206-101] Register 'region_mask_latched' is power-on initialization." projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:12.537-0400" type="Warning"/>
+        <logs message="WARNING: [RTGEN 206-101] Register 'motion_count_latched' is power-on initialization." projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:12.487-0400" type="Warning"/>
+        <logs message="WARNING: [RTGEN 206-101] Register 'addr' is power-on initialization." projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:12.481-0400" type="Warning"/>
+        <logs message="WARNING: [RTGEN 206-101] Register 'x' is power-on initialization." projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:12.475-0400" type="Warning"/>
+        <logs message="WARNING: [RTGEN 206-101] Register 'first_frame' is power-on initialization." projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:12.469-0400" type="Warning"/>
+        <logs message="WARNING: [RTGEN 206-101] Register 'region_mask_accum' is power-on initialization." projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:12.461-0400" type="Warning"/>
+        <logs message="WARNING: [RTGEN 206-101] Register 'motion_count_accum' is power-on initialization." projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:12.454-0400" type="Warning"/>
+        <logs message="WARNING: [RTGEN 206-101] Register 'y' is power-on initialization." projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:12.451-0400" type="Warning"/>
+        <logs message="WARNING: [RTGEN 206-101] Port 'motion_count_out' with mode 'ap_none' may require an associated data valid signal to correctly communicate with other blocks or a test bench; automatic C/RTL co-simulation may not be able to verify such a port." projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:12.433-0400" type="Warning"/>
+        <logs message="WARNING: [RTGEN 206-101] Design contains AXI ports. Reset is fixed to synchronous and active low." projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:12.401-0400" type="Warning"/>
+        <logs message="WARNING: [HLS 200-1016] The critical path in module 'video_gray_live' consists of the following:&#xD;&#xA;&#x9;'icmp' operation 1 bit ('icmp_ln92', video_gray_live.cpp:92) [121]  (1.639 ns)&#xD;&#xA;&#x9;'select' operation 4 bit ('region_idx', video_gray_live.cpp:92) [122]  (1.024 ns)&#xD;&#xA;&#x9;multiplexor before 'phi' operation 4 bit ('region_idx') with incoming values : ('region_idx', video_gray_live.cpp:92) ('select_ln70_1_cast', video_gray_live.cpp:84) ('select_ln70_cast', video_gray_live.cpp:76) [137]  (2.065 ns)&#xD;&#xA;&#x9;'phi' operation 4 bit ('region_idx') with incoming values : ('region_idx', video_gray_live.cpp:92) ('select_ln70_1_cast', video_gray_live.cpp:84) ('select_ln70_cast', video_gray_live.cpp:76) [137]  (0.000 ns)&#xD;&#xA;&#x9;'shl' operation 9 bit ('shl_ln100', video_gray_live.cpp:100) [141]  (2.397 ns)&#xD;&#xA;&#x9;'or' operation 9 bit ('or_ln100', video_gray_live.cpp:100) [142]  (0.990 ns)&#xD;&#xA;&#x9;multiplexor before 'phi' operation 16 bit ('motion_count_accum_loc_2', video_gray_live.cpp:99) with incoming values : ('motion_count_accum_loc_0_load') ('add_ln99', video_gray_live.cpp:99) [146]  (1.588 ns)&#xD;&#xA;&#x9;'phi' operation 16 bit ('motion_count_accum_loc_2', video_gray_live.cpp:99) with incoming values : ('motion_count_accum_loc_0_load') ('add_ln99', video_gray_live.cpp:99) [146]  (0.000 ns)&#xD;&#xA;&#x9;multiplexor before 'phi' operation 16 bit ('motion_count_accum_loc_3', video_gray_live.cpp:99) with incoming values : ('motion_count_accum_loc_0_load') ('add_ln99', video_gray_live.cpp:99) [155]  (1.588 ns)&#xD;&#xA;&#x9;'phi' operation 16 bit ('motion_count_accum_loc_3', video_gray_live.cpp:99) with incoming values : ('motion_count_accum_loc_0_load') ('add_ln99', video_gray_live.cpp:99) [155]  (0.000 ns)&#xD;&#xA;&#x9;'store' operation 0 bit ('motion_count_latched_write_ln127', video_gray_live.cpp:127) of variable 'motion_count_accum_loc_3', video_gray_live.cpp:99 on static variable 'motion_count_latched' [178]  (1.588 ns)&#xD;&#xA;&#xD;&#xA;Resolution: For help on HLS 200-1016 see docs.xilinx.com/access/sources/dita/topic?Doc_Version=2023.2%20English&amp;url=ug1448-hls-guidance&amp;resourceid=200-1016.html" projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:11.751-0400" type="Warning"/>
+        <logs message="WARNING: [HLS 200-871] Estimated clock period (12.880 ns) exceeds the target (target clock period: 10.000 ns, clock uncertainty: 2.700 ns, effective delay budget: 7.300 ns).&#xD;&#xA;Resolution: For help on HLS 200-871 see docs.xilinx.com/access/sources/dita/topic?Doc_Version=2023.2%20English&amp;url=ug1448-hls-guidance&amp;resourceid=200-871.html" projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:11.743-0400" type="Warning"/>
+        <logs message="WARNING: [XFORM 203-561] 'VITIS_LOOP_46_1' (video_gray_live.cpp:46:22) in function 'video_gray_live' is an infinite loop." projectName="video_gray_live_prj" solutionName="solution1" date="2026-05-09T01:12:10.518-0400" type="Warning"/>
+      </synLog>
+      <simLog/>
+      <mgLog/>
+      <packageLog/>
+      <csimLog/>
+    </logs>
+  </warningLogs>
+</vivadoHLSLog:LogRoot>

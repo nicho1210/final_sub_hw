@@ -1,0 +1,9 @@
+{
+	"version": "1.0",
+	"modules": {
+		"video_gray_live": {
+			"proto_instances": {
+			}
+		}
+	}
+}
