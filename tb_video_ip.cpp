@@ -89,29 +89,24 @@ int main()
 {
     hls::stream<axis_pixel_t> in_stream("in_stream");
     hls::stream<axis_pixel_t> out_stream("out_stream");
-    volatile ap_uint<32> motion_info_out = 0;
+    ap_uint<32> motion_info_out = 0;
 
-    // Region 5 test pixel: center of screen and aligned to 4x4 sample grid
     const int hot_x = 640;   // divisible by 4, region 5
     const int hot_y = 360;   // divisible by 4, region 5
 
-    // Launch the ap_ctrl_none DUT in the background. The kernel runs forever,
-    // which matches the final board design. The testbench feeds two full frames,
-    // drains two full frames, checks the results, and then exits.
-    std::thread dut_thread([&]() {
-        video_gray_live(in_stream, out_stream, &motion_info_out);
-    });
-    dut_thread.detach();
-
     int errors = 0;
 
+    // -----------------------------
     // Frame 1: all black
+    // -----------------------------
     feed_frame(in_stream, -1, -1, 255, 0);
+
+    video_gray_live(in_stream, out_stream, &motion_info_out);
+
     errors += drain_and_check_frame(out_stream, -1, -1, 255, 0);
 
-    ap_uint<32> info_after_f1 = motion_info_out;
-    unsigned count_f1 = (unsigned)(info_after_f1 & 0xFFFF);
-    unsigned mask_f1  = (unsigned)((info_after_f1 >> 16) & 0x01FF);
+    unsigned count_f1 = (unsigned)(motion_info_out & 0xFFFF);
+    unsigned mask_f1  = (unsigned)((motion_info_out >> 16) & 0x01FF);
 
     if (count_f1 != 0 || mask_f1 != 0) {
         std::cout << "Frame 1 motion info mismatch: "
@@ -120,17 +115,18 @@ int main()
         ++errors;
     }
 
-    // Frame 2: one bright 4x4-sampled pixel in region 5
+    // -----------------------------
+    // Frame 2: one bright sampled block in region 5
+    // -----------------------------
     feed_frame(in_stream, hot_x, hot_y, 255, 0);
+
+    video_gray_live(in_stream, out_stream, &motion_info_out);
+
     errors += drain_and_check_frame(out_stream, hot_x, hot_y, 255, 0);
 
-    ap_uint<32> info_after_f2 = motion_info_out;
-    unsigned count_f2 = (unsigned)(info_after_f2 & 0xFFFF);
-    unsigned mask_f2  = (unsigned)((info_after_f2 >> 16) & 0x01FF);
+    unsigned count_f2 = (unsigned)(motion_info_out & 0xFFFF);
+    unsigned mask_f2  = (unsigned)((motion_info_out >> 16) & 0x01FF);
 
-    // Expected:
-    // - exactly one changed sampled block
-    // - region 5 active => bit index 4 set
     if (count_f2 != 1) {
         std::cout << "Frame 2 motion_count mismatch: got=" << count_f2
                   << " expect=1" << std::endl;
@@ -149,6 +145,6 @@ int main()
         return 0;
     } else {
         std::cout << "TEST FAILED with " << errors << " error(s)" << std::endl;
-        return 1;
+        return errors;
     }
 }

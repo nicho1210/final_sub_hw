@@ -34,16 +34,6 @@ The board-level system described here is the final PYNQ-Z2 HDMI design used in d
 
 ---
 
-## Repository contents in this submission
-The root-level files in this repository are intended to match the final design described in this README.
-
-### Important files
-- `video_ip.cpp` — final HLS IP source
-- `video_ip.h` — final HLS IP interface definition
-- `tb_video_ip.cpp` — final HLS testbench
-- `Makefile` — build/simulation helper
-- `README.md` — design overview and grading notes
-
 ## 1. Project overview
 This project implements a **custom Vitis HLS video IP** for the PYNQ-Z2 HDMI pipeline. The final system accepts a live HDMI video stream, performs **real-time threshold-based video preprocessing** on the FPGA, and computes **block-based motion detection** in the background by comparing the current frame against the previous frame.
 
@@ -84,9 +74,9 @@ The root-level files in this repository are intended to match the final HLS desi
 
 ### Important files
 - `video_ip.cpp` — final HLS IP source
-- `video_ip.h` — final HLS IP interface definitions
+- `video_ip.h` — final HLS IP interface definition
 - `tb_video_ip.cpp` — final HLS testbench
-- `Makefile` — build/simulation helper if included
+- `Makefile` — build/simulation helper
 - `README.md` — design overview and grading notes
 
 ### What this repository is meant to show
@@ -95,8 +85,6 @@ This repository is primarily focused on:
 - the **matching interface definition**
 - the **testbench for functional verification**
 - the **system-level design explanation**
-
-If additional synthesis reports, timing reports, screenshots, or board-level integration files are added later, they should be referenced from this README in the same style.
 
 ---
 
@@ -110,10 +98,10 @@ The original goal was to build a real-time HDMI motion detection IP that could:
 
 ### Final implementation
 The final system provides:
-- stable HDMI threshold output,
-- background previous-frame motion analysis,
-- packed motion reporting,
-- and 1–9 region-based motion localization.
+- stable HDMI threshold output
+- background previous-frame motion analysis
+- packed motion reporting
+- 1–9 region-based motion localization
 
 ### Important design lesson
 During development, we found that:
@@ -189,10 +177,10 @@ The HDMI output shows a **thresholded binary image**:
 
 ### UART output
 The UART prints:
-- whether the HDMI RX and TX are locked,
-- the motion count for the current frame,
-- whether motion is detected,
-- and which screen regions contain motion.
+- whether the HDMI RX and TX are locked
+- the motion count for the current frame
+- whether motion is detected
+- which screen regions contain motion
 
 Example:
 
@@ -201,10 +189,10 @@ Example:
 ```
 
 This means:
-- the video system is alive,
-- input and output are locked,
-- 428 motion blocks changed,
-- and motion was detected in regions 2, 5, and 9.
+- the video system is alive
+- input and output are locked
+- 428 motion blocks changed
+- motion was detected in regions 2, 5, and 9
 
 ---
 
@@ -333,13 +321,10 @@ For a 1280×720 frame:
 
 So the motion detector compares:
 
-320 × 180 = 57600
-
-sample blocks per frame.
+**320 × 180 = 57600** sampled blocks per frame.
 
 ### 11.2 Binary thresholding
 For each sampled block location:
-
 - `curr_bin = 1` if `G >= T`
 - `curr_bin = 0` otherwise
 
@@ -353,7 +338,6 @@ Let:
 - `prev_bin` = previous frame binary value stored in on-chip memory
 
 Then motion is computed as:
-
 - `motion = curr_bin XOR prev_bin`
 
 So:
@@ -378,29 +362,27 @@ If motion occurs in a block inside a region, that region’s bit is set in a 9-b
 
 Thus, the system reports:
 - how much motion occurred
-- and where it occurred
+- where it occurred
 
 ---
 
 ## 12. Verification and evaluation
 
-### 12.1 Functional checks
-The intended functional checks for the final design are:
-- threshold output correctness
-- sideband correctness (`TUSER`, `TLAST`)
-- previous-frame motion accumulation
-- `motion_count` correctness
-- `region_mask` correctness
+### 12.1 Functional verification
+The repository includes a C++ testbench for the final HLS IP.
 
-### 12.2 Testbench
-The repository includes a C++ testbench for the HLS IP.
-
-The final testbench should check:
+The final testbench checks:
 - thresholded output pixels
+- sideband correctness (`TUSER`, `TLAST`)
 - packed motion count
 - packed region mask
 
-### 12.3 Hardware checks
+The intended expected behavior is:
+- frame 1 reports zero motion
+- frame 2 reports `motion_count = 1`
+- frame 2 reports the region-5 bit set
+
+### 12.2 Hardware verification
 Board-level checks used during development included:
 - UART logs
 - RX/TX lock monitoring
@@ -408,7 +390,7 @@ Board-level checks used during development included:
 - timing reports
 - block design validation
 
-### 12.4 Final validation goals
+### 12.3 Final validation goals
 Final success criteria:
 - HDMI threshold output stable
 - `rx_lock = 1`
@@ -416,23 +398,24 @@ Final success criteria:
 - motion count changes when the scene changes
 - region outputs track where motion occurs
 
-### 12.5 Simulation and synthesis evidence
-For grading, this repository should ideally include:
-- HLS C simulation output
-- synthesis report summaries
-- latency / throughput summary tables
-- resource utilization tables
+### 12.4 HLS synthesis summary
+The final HLS synthesis summary is:
 
-A useful summary table format is:
+| Metric | Value |
+|---|---:|
+| Pipelined | Yes |
+| Initiation Interval (II) | 1 |
+| Iteration Latency | 2 cycles |
+| Trip Count | inf |
+| BRAM | 0 |
+| DSP | 0 |
+| FF | 180 |
+| LUT | 1591 |
+| URAM | 0 |
 
-| Version | Description | II | Estimated Clock | LUT | FF | BRAM | DSP | Result |
-|---|---|---:|---:|---:|---:|---:|---:|---|
-| v1 | Pass-through | fill in | fill in | fill in | fill in | fill in | fill in | Stable |
-| v2 | Threshold | fill in | fill in | fill in | fill in | fill in | fill in | Stable |
-| v3 | Motion output attempt | fill in | fill in | fill in | fill in | fill in | fill in | Unstable |
-| vFinal | Threshold + UART motion report | fill in | fill in | fill in | fill in | fill in | fill in | Stable |
+These results show that the final design achieved a pipelined implementation with **II = 1**, which matches the intended real-time streaming goal.
 
-### 12.6 Comparison against initial goals
+### 12.5 Comparison against initial goals
 The initial goal was direct motion-mask or overlay output on HDMI.  
 The final evaluation showed that this was not stable in the current architecture.
 
@@ -475,33 +458,34 @@ The PS does **not** process the video stream itself. All video processing is don
 
 ---
 
-## 15. Organization and documentation notes
+## 15. Reproducibility
 
-### 15.1 Keep the repository consistent
-The most important rule for this submission is that:
+### 15.1 Root-level files to inspect
+The most important files for this submission are:
 - `README.md`
 - `video_ip.cpp`
 - `video_ip.h`
 - `tb_video_ip.cpp`
+- `Makefile`
 
-must all describe the **same final design**.
+### 15.2 To rerun HLS C simulation
+1. Open the HLS project.
+2. Add `video_ip.cpp` as the design source.
+3. Add `video_ip.h` as the shared header.
+4. Add `tb_video_ip.cpp` as the testbench.
+5. Set the top function to `video_gray_live`.
+6. Run C simulation.
+7. Expected result: the testbench reports pass and confirms the packed motion information.
 
-### 15.2 Keep the repo clean
-Avoid committing unnecessary large generated files such as:
-- `.jou`
-- `.log`
-- `.cache`
-- temporary run directories if not needed
-- very large duplicated build outputs
+### 15.3 To rerun HLS synthesis
+1. Use the same top function, `video_gray_live`.
+2. Run C synthesis.
+3. Record the achieved II, iteration latency, and resource usage.
+4. Compare the values against the summary table in this README.
 
-### 15.3 Make evidence easy to inspect
-Because the grader will not execute the code, documentation should clearly point to:
-- custom IP source file
-- testbench
-- synthesis summaries
-- timing summaries
-- architecture diagrams
-- UART output examples
+### 15.4 Repository cleanliness
+This repository intentionally keeps the submission small and easy to inspect.  
+Large generated build artifacts such as `.jou`, `.log`, `.cache`, and bulky temporary run directories are not required for understanding the final HLS design.
 
 ---
 

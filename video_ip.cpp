@@ -43,7 +43,11 @@ void video_gray_live(
 
     const ap_uint<8> THRESH = 96;
 
+ #ifdef __SYNTHESIS__
     while (1) {
+#else
+    for (int sim_pix = 0; sim_pix < FRAME_WIDTH * FRAME_HEIGHT; sim_pix++) {
+#endif
 #pragma HLS PIPELINE II=1
         axis_pixel_t p = in_stream.read();
 
@@ -58,10 +62,8 @@ void video_gray_live(
         ap_uint<8> g = p.data.range(15,8);
         ap_uint<1> curr_bin = (g >= THRESH) ? 1 : 0;
 
-        // 保持已知穩定的 threshold 畫面輸出
         ap_uint<8> out_pix = curr_bin ? ap_uint<8>(255) : ap_uint<8>(0);
 
-        // 每個 4x4 block 左上角才做一次 previous-frame 比較
         if ((x.range(1,0) == 0) && (y.range(1,0) == 0)) {
             ap_uint<1> prev_bin = prev_frame[addr];
             ap_uint<1> motion = first_frame ? ap_uint<1>(0) : (curr_bin ^ prev_bin);
@@ -69,30 +71,29 @@ void video_gray_live(
             if (motion) {
                 ap_uint<4> region_idx = 0;
 
-                // 不用乘法，直接用比較決定區塊 0..8
                 if (y < Y_SPLIT1) {
                     if (x < X_SPLIT1) {
-                        region_idx = 0;   // 區1
+                        region_idx = 0;
                     } else if (x < X_SPLIT2) {
-                        region_idx = 1;   // 區2
+                        region_idx = 1;
                     } else {
-                        region_idx = 2;   // 區3
+                        region_idx = 2;
                     }
                 } else if (y < Y_SPLIT2) {
                     if (x < X_SPLIT1) {
-                        region_idx = 3;   // 區4
+                        region_idx = 3;
                     } else if (x < X_SPLIT2) {
-                        region_idx = 4;   // 區5
+                        region_idx = 4;
                     } else {
-                        region_idx = 5;   // 區6
+                        region_idx = 5;
                     }
                 } else {
                     if (x < X_SPLIT1) {
-                        region_idx = 6;   // 區7
+                        region_idx = 6;
                     } else if (x < X_SPLIT2) {
-                        region_idx = 7;   // 區8
+                        region_idx = 7;
                     } else {
-                        region_idx = 8;   // 區9
+                        region_idx = 8;
                     }
                 }
 
@@ -134,7 +135,6 @@ void video_gray_live(
             x++;
         }
 
-        // [15:0] = count, [24:16] = region mask
         *motion_count_out =
             ((ap_uint<32>)region_mask_latched << 16) |
             (ap_uint<32>)motion_count_latched;
