@@ -1,7 +1,7 @@
 # Real-Time Threshold Video and Motion Detection Reporting IP for PYNQ
 
 ## Repository URL
-**GitHub repository:** `https://github.com/nicho1210/hd_final.git`
+**GitHub repository:** `https://github.com/nicho1210/final_sub_hw.git`
 
 ### Notes for grader
 This repository contains the **final HLS IP source at the root level** together with a matching header and testbench.  
