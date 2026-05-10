@@ -1,7 +1,0 @@
-ALL TESTS PASSED
-INFO [HLS SIM]: The maximum depth reached by any hls::stream() instance in the design is 921600
-INFO: [SIM 211-1] CSim done with 0 errors.
-INFO: [SIM 211-3] *************** CSIM finish ***************
-INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 7.424 seconds; current allocated memory: 0.477 MB.
-INFO: [HLS 200-112] Total CPU user time: 1 seconds. Total CPU system time: 1 seconds. Total elapsed time: 8.283 seconds; peak allocated memory: 115.250 MB.
-Finished C simulation.
